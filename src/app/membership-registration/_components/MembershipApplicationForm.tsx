@@ -11,13 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { TMembershipApplication, TProvinces } from "@/data.type";
+import { TMembershipApplication, TMunicipalities, TProvinces } from "@/data.type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ provinces }) => {
+  const [municipalities, setMunicipalities] = useState([]);
   const {
     register,
     formState: { errors },
@@ -35,6 +36,7 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
 
   const onChnage = async (data: string) => {
     const municipalities = await getMunicipalites(data);
+    setMunicipalities(municipalities);
   };
 
   return (
@@ -156,8 +158,13 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
                 <SelectValue placeholder="Municipality" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="example1">example1</SelectItem>
-                <SelectItem value="example2">example2</SelectItem>
+                {municipalities
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((data, index) => (
+                    <SelectItem key={index} value={data.code}>
+                      {data.name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>

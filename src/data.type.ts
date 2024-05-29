@@ -11,3 +11,14 @@ export type TProvinces = {
     islandGroupCode: string;
     psgc10DigitCode: string;
 };
+
+export type TMunicipalities = {
+    code: string,
+    name: string,
+    oldName: string,
+    isCapital: boolean
+    districtCode: string,
+    provinceCode: string,
+    regionCode: string,
+    islandGroupCode: string
+}
