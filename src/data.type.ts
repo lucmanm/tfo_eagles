@@ -22,3 +22,16 @@ export type TMunicipalities = {
     regionCode: string,
     islandGroupCode: string
 }
+
+export type TBarangays = {
+    code: string,
+    name: string,
+    oldName: string,
+    subMunicipalityCode: string,
+    cityCode: string,
+    municipalityCode: string,
+    districtCode: string,
+    provinceCode: string,
+    regionCode: string,
+    islandGroupCode: string
+  }

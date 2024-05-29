@@ -1,5 +1,5 @@
 "use client";
-import { getMunicipalites } from "@/action/getAddress";
+import { getBarangays, getMunicipalites } from "@/action/getAddress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { TMembershipApplication, TMunicipalities, TProvinces } from "@/data.type";
+import { TBarangays, TMembershipApplication, TMunicipalities, TProvinces } from "@/data.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ import { z } from "zod";
 
 const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ provinces }) => {
   const [municipalities, setMunicipalities] = useState<TMunicipalities[]>([]);
+  const [barangays, setBarangays] = useState<TBarangays[]>([]);
   const {
     register,
     formState: { errors },
@@ -38,7 +39,12 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
     const municipalities: TMunicipalities[] = await getMunicipalites(data);
     setMunicipalities(municipalities);
   };
+  const onChangeBarangays = async (municipalityCode: string) => {
+    const barangays: TBarangays[] = await getBarangays(municipalityCode);
+    setBarangays(barangays);
+  };
 
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <section className="grid grid-cols-12 gap-4">
@@ -153,18 +159,22 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
 
           <div className="grid items-center gap-1.5  max-sm:col-span-6 col-span-2">
             <Label htmlFor="municipality">Municipality/City</Label>
-            <Select>
+            <Select onValueChange={onChangeBarangays}>
               <SelectTrigger>
                 <SelectValue placeholder="Municipality" />
               </SelectTrigger>
               <SelectContent>
-                {municipalities
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((data, index) => (
-                    <SelectItem key={index} value={data.code}>
-                      {data.name}
-                    </SelectItem>
-                  ))}
+                {municipalities.length <= 0 ? (
+                  <SelectItem value="s">Select Povince</SelectItem>
+                ) : (
+                  municipalities
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((data, index) => (
+                      <SelectItem key={index} value={data.code}>
+                        {data.name}
+                      </SelectItem>
+                    ))
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -176,8 +186,17 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
                 <SelectValue placeholder="Barangay" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="example1">example1</SelectItem>
-                <SelectItem value="example2">example2</SelectItem>
+                {barangays.length <= 0 ? (
+                  <SelectItem value="s">Select Municipalities</SelectItem>
+                ) : (
+                  barangays
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((data, index) => (
+                      <SelectItem key={index} value={data.code}>
+                        {data.name}
+                      </SelectItem>
+                    ))
+                )}
               </SelectContent>
             </Select>
           </div>
