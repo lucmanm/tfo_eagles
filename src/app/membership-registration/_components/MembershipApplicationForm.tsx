@@ -1,8 +1,10 @@
 "use client";
 import { getBarangays, getMunicipalites } from "@/action/getAddress";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -12,7 +14,10 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { TBarangays, TMembershipApplication, TMunicipalities, TProvinces } from "@/data.type";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,6 +25,7 @@ import { z } from "zod";
 const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ provinces }) => {
   const [municipalities, setMunicipalities] = useState<TMunicipalities[]>([]);
   const [barangays, setBarangays] = useState<TBarangays[]>([]);
+  const [date, setDate] = React.useState<Date>();
   const {
     register,
     formState: { errors },
@@ -44,7 +50,6 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
     setBarangays(barangays);
   };
 
-  
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <section className="grid grid-cols-12 gap-4">
@@ -203,15 +208,7 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
 
           <div className="grid items-center gap-1.5  max-sm:col-span-6 col-span-2">
             <Label htmlFor="zip_code">Zip Code</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Zip Code" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="zip_code1">zip_code1</SelectItem>
-                <SelectItem value="zip_code2">zip_code2</SelectItem>
-              </SelectContent>
-            </Select>
+            <Input type="text" id="zip_code" placeholder="Zip Code" />
           </div>
         </section>
 
@@ -223,7 +220,7 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
 
             <Separator className="my-4" />
           </div>
-          <div className="grid w-full items-center gap-1.5 col-span-6">
+          <div className="grid w-full items-center gap-1.5 col-span-6 max-sm:col-span-12">
             <Label htmlFor="Name_of_office_line_of_bussiness">
               Name of Office line of bussiness
             </Label>
@@ -233,11 +230,11 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
               placeholder="Name of Office line of bussiness"
             />
           </div>
-          <div className="grid w-full items-center gap-1.5 col-span-6">
+          <div className="grid w-full items-center gap-1.5 col-span-6 max-sm:col-span-12">
             <Label htmlFor="address">Address</Label>
             <Input type="text" id="address" placeholder="Address" />
           </div>
-          <div className="grid w-full items-center gap-1.5 col-span-6">
+          <div className="grid w-full items-center gap-1.5 col-span-6 max-sm:col-span-12">
             <Label htmlFor="title_and_position">Title and Position</Label>
             <Input type="text" id="title_and_position" placeholder="Title and Position" />
           </div>
@@ -249,6 +246,103 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
           <div className="grid w-full items-center gap-1.5 max-sm:col-span-6 col-span-3">
             <Label htmlFor="fax_number">Fax Number</Label>
             <Input type="text" id="fax_number" placeholder="Fax Number" />
+          </div>
+        </section>
+
+        {/* Educational Attainment */}
+
+        <section className="grid grid-cols-12 gap-4 col-span-12 pt-8">
+          <div className="space-y-4 col-span-12">
+            <h4 className="text-xl font-bold leading-none">Educational Attainment</h4>
+
+            <Separator className="my-4" />
+          </div>
+          <div className="grid w-full items-center gap-1.5 col-span-9 max-sm:col-span-9">
+            <Label htmlFor="elementary">Elementary</Label>
+            <Input type="text" id="elementary" placeholder="Elementary" />
+          </div>
+          <div className="grid grow items-center justify-end gap-1.5 col-span-3 max-sm:col-span-3 border-2 *:w-full">
+            <Label htmlFor="elementary">Date Graduated</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="grid w-full items-center gap-1.5 col-span-9 max-sm:col-span-12">
+            <Label htmlFor="highschool">High School</Label>
+            <Input type="text" id="highschool" placeholder="High School" />
+          </div>
+          <div className="grid w-full items-center gap-1.5 col-span-3 justify-end max-sm:col-span-12">
+            <Label htmlFor="elementary">Date Graduated</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="grid w-full items-center gap-1.5 col-span-9 max-sm:col-span-12">
+            <Label htmlFor="college">College</Label>
+            <Input type="text" id="college" placeholder="college" />
+          </div>
+          <div className="grid w-full items-center gap-1.5 col-span-3 justify-end max-sm:col-span-12">
+            <Label htmlFor="elementary">Date Graduated</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="grid w-full items-center gap-1.5  col-span-4 max-sm:col-span-12">
+            <Label htmlFor="course">Course</Label>
+            <Input type="text" id="course" placeholder="Course" />
+          </div>
+          <div className="grid w-full items-center gap-1.5  col-span-4 max-sm:col-span-12">
+            <Label htmlFor="hobbies">Hobbies</Label>
+            <Input type="text" id="hobbies" placeholder="hobbies" />
+          </div>
+          <div className="grid w-full items-center gap-1.5  col-span-4 max-sm:col-span-12">
+            <Label htmlFor="special_skills">Special Skills</Label>
+            <Input type="text" id="special_skills" placeholder="special_skills" />
           </div>
         </section>
       </section>
