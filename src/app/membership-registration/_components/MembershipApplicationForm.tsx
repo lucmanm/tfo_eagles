@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ provinces }) => {
-  const [municipalities, setMunicipalities] = useState([]);
+  const [municipalities, setMunicipalities] = useState<TMunicipalities[]>([]);
   const {
     register,
     formState: { errors },
@@ -35,7 +35,7 @@ const MembershipApplicationForm: React.FC<{ provinces: TProvinces[] }> = ({ prov
   };
 
   const onChnage = async (data: string) => {
-    const municipalities = await getMunicipalites(data);
+    const municipalities: TMunicipalities[] = await getMunicipalites(data);
     setMunicipalities(municipalities);
   };
 
